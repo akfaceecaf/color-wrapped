@@ -34,11 +34,13 @@ function TrackGrid({ tracks }) {
 
 function App() {
   const [tracks, setTracks] = useState([]);
+  const [accessToken, setAccessToken] = useState(null);
 
   useEffect(() => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const access_token = urlParams.get("access_token");
+    setAccessToken(access_token);
     if (access_token === null) {
       window.location.href = `${VITE_API_URL}/login`;
       return;

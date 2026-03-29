@@ -1,0 +1,46 @@
+img {
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+p {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.tracks-grid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 1rem 2rem;
+  padding: 1rem;
+  font-size: 1rem;
+}
+
+.track-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.track-top-row,
+.track-bottom-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.track-square {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+}
+
+.color-square {
+  width: 50%;
+  aspect-ratio: 1;
+}

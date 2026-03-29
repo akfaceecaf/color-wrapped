@@ -51,6 +51,7 @@ function App() {
       );
       // window.history.replaceState({}, document.title, window.location.pathname);
       const data = await response.json();
+      console.log(data);
       // sort tracks
       data.sort((a, b) => {
         const [ra, ga, ba] = a.average_color;

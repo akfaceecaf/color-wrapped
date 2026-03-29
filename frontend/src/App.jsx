@@ -40,6 +40,11 @@ function App() {
   useEffect(() => {
     const fetchTracks = async () => {
       const response = await fetch(`${VITE_API_URL}/recently_played`);
+      if (response.status === 401) {
+        window.location.href = `${VITE_API_URL}/login`;
+        return;
+      }
+      console.log(response);
       const data = await response.json();
       // sort tracks
       data.sort((a, b) => {

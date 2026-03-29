@@ -49,9 +49,8 @@ function App() {
       const response = await fetch(
         `${VITE_API_URL}/recently_played?access_token=${access_token}`,
       );
-      // window.history.replaceState({}, document.title, window.location.pathname);
+      window.history.replaceState({}, document.title, window.location.pathname);
       const data = await response.json();
-      console.log(data);
       // sort tracks
       data.sort((a, b) => {
         const [ra, ga, ba] = a.average_color;

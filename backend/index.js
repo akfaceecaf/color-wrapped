@@ -74,7 +74,7 @@ app.get("/recently_played", async (req, res) => {
     Authorization: "Bearer " + req.query.access_token,
   };
   const result = await axios.get(url, { headers });
-  const data = result.data;
+  const data = result.data.slice(0, 20);
 
   const extractSongDetails = async (item) => {
     const image_url = item.track.album.images[0].url;

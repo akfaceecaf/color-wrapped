@@ -49,7 +49,7 @@ function App() {
       const response = await fetch(
         `${VITE_API_URL}/recently_played?access_token=${access_token}`,
       );
-      window.history.replaceState({}, document.title, window.location.pathname);
+      // window.history.replaceState({}, document.title, window.location.pathname);
       const data = await response.json();
       // sort tracks
       data.sort((a, b) => {

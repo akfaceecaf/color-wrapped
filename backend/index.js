@@ -15,8 +15,6 @@ const port = process.env.PORT;
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const site_url = process.env.SITE_URL;
-let access_token = null;
-let refresh_token = null;
 
 app.get("/login", (req, res) => {
   const scope = "user-read-recently-played";
@@ -25,6 +23,7 @@ app.get("/login", (req, res) => {
     response_type: "code",
     redirect_uri: redirect_uri,
     scope: scope,
+    show_dialog: true,
   });
   const url = "https://accounts.spotify.com/authorize?" + query.toString();
   res.redirect(url);
@@ -49,9 +48,7 @@ app.get("/callback", async (req, res) => {
         Buffer.from(client_id + ":" + client_secret).toString("base64"),
     };
     const result = await axios.post(url, form.toString(), { headers });
-    access_token = result.data.access_token;
-    refresh_token = result.data.refresh_token;
-    res.redirect(site_url);
+    res.redirect(`${site_url}?access_token=${result.data.access_token}`);
   }
 });
 
@@ -74,7 +71,7 @@ app.get("/refresh_token", async (req, res) => {
 app.get("/recently_played", async (req, res) => {
   const url = "https://api.spotify.com/v1/me/player/recently-played?limit=50";
   const headers = {
-    Authorization: "Bearer " + access_token,
+    Authorization: "Bearer " + req.query.access_token,
   };
   const result = await axios.get(url, { headers });
   const data = result.data;

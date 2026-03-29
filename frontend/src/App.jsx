@@ -36,12 +36,18 @@ function App() {
   const [tracks, setTracks] = useState([]);
 
   useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const access_token = urlParams.get("access_token");
+    if (access_token === null) {
+      window.location.href = `${VITE_API_URL}/login`;
+      return;
+    }
     const fetchTracks = async () => {
-      const response = await fetch(`${VITE_API_URL}/recently_played`);
-      if (response.status === 401) {
-        window.location.href = `${VITE_API_URL}/login`;
-        return;
-      }
+      const response = await fetch(
+        `${VITE_API_URL}/recently_played?access_token=${access_token}`,
+      );
+      window.history.replaceState({}, document.title, window.location.pathname);
       const data = await response.json();
       // sort tracks
       data.sort((a, b) => {
@@ -58,7 +64,6 @@ function App() {
         }
       });
       setTracks(data);
-      console.log(data);
     };
     fetchTracks();
   }, []);

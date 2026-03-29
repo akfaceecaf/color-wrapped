@@ -32,8 +32,6 @@ function TrackGrid({ tracks }) {
   );
 }
 
-console.log(convert.rgb.hsl(3, 2, 1));
-
 function App() {
   const [tracks, setTracks] = useState([]);
 
@@ -44,7 +42,6 @@ function App() {
         window.location.href = `${VITE_API_URL}/login`;
         return;
       }
-      console.log(response);
       const data = await response.json();
       // sort tracks
       data.sort((a, b) => {

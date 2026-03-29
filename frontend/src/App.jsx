@@ -41,7 +41,6 @@ function App() {
     const urlParams = new URLSearchParams(queryString);
     const access_token = urlParams.get("access_token");
     setAccessToken(access_token);
-    console.log("accessToken", accessToken);
     if (access_token === null) {
       window.location.href = `${VITE_API_URL}/login`;
       return;
@@ -51,9 +50,6 @@ function App() {
         `${VITE_API_URL}/recently_played?access_token=${access_token}`,
       );
       window.history.replaceState({}, document.title, window.location.pathname);
-      console.log("accessToken", accessToken);
-      console.log("access_token", access_token);
-      console.log(response);
       const data = await response.json();
       // sort tracks
       data.sort((a, b) => {

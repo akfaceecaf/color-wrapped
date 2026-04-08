@@ -70,11 +70,12 @@ app.get("/refresh_token", async (req, res) => {
 
 app.get("/recently_played", async (req, res) => {
   const url = "https://api.spotify.com/v1/me/player/recently-played?limit=50";
+  console.log(req.query.access_token);
   const headers = {
     Authorization: "Bearer " + req.query.access_token,
   };
   const result = await axios.get(url, { headers });
-  const items = result.data.items.slice(0, 20);
+  const items = result.data.items;
 
   const extractSongDetails = async (item) => {
     const image_url = item.track.album.images[0].url;

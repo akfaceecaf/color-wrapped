@@ -4,6 +4,7 @@ import axios from "axios";
 import dotenv from "dotenv";
 
 import fetchAverageColor from "./color.js";
+import { prepareSongs } from "./cluster.js";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const port = process.env.PORT;
 const client_id = process.env.SPOTIFY_CLIENT_ID;
 const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const site_url = process.env.SITE_URL;
+const cluster_api_url = process.env.CLUSTER_API_URL;
 
 app.get("/login", (req, res) => {
   const scope = "user-read-recently-played";
@@ -68,11 +70,10 @@ app.get("/refresh_token", async (req, res) => {
   res.json(result.data);
 });
 
-app.get("/recently_played", async (req, res) => {
+const fetchRecentlyPlayed = async (access_token) => {
   const url = "https://api.spotify.com/v1/me/player/recently-played?limit=50";
-  console.log(req.query.access_token);
   const headers = {
-    Authorization: "Bearer " + req.query.access_token,
+    Authorization: "Bearer " + access_token,
   };
   const result = await axios.get(url, { headers });
   const items = result.data.items;
@@ -90,10 +91,31 @@ app.get("/recently_played", async (req, res) => {
     return details;
   };
 
-  const tracks = await Promise.all(
-    items.map((item) => extractSongDetails(item)),
-  );
+  return Promise.all(items.map((item) => extractSongDetails(item)));
+};
+
+app.get("/recently_played", async (req, res) => {
+  const tracks = await fetchRecentlyPlayed(req.query.access_token);
   res.json(tracks);
+});
+
+app.get("/cluster", async (req, res) => {
+  const tracks = await fetchRecentlyPlayed(req.query.access_token);
+  const filteredTracks = prepareSongs(tracks);
+
+  const vectors = filteredTracks.map(({ vector }) => vector);
+  const config = { algorithm: "kmeans", n_clusters: 8 };
+  const clusterResults = await axios.post(cluster_api_url, {
+    vectors,
+    config,
+  });
+  const labels = clusterResults.data.labels;
+
+  const clustered = filteredTracks.map(({ song }, i) => ({
+    ...song,
+    cluster: labels[i],
+  }));
+  res.json(clustered);
 });
 
 app.listen(port, () => {

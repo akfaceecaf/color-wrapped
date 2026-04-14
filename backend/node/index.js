@@ -31,11 +31,9 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/callback", async (req, res) => {
-  const code = req.query.code || null;
-  const state = req.query.state || null;
-  if (false) {
-    console.log(false);
-  } else {
+  try {
+    const code = req.query.code || null;
+
     const url = "https://accounts.spotify.com/api/token";
     const form = new URLSearchParams({
       code: code,
@@ -49,24 +47,33 @@ app.get("/callback", async (req, res) => {
         Buffer.from(client_id + ":" + client_secret).toString("base64"),
     };
     const result = await axios.post(url, form.toString(), { headers });
-    res.redirect(`${site_url}?access_token=${result.data.access_token}`);
+    res.redirect(
+      `${site_url}#access_token=${result.data.access_token}&refresh_token=${result.data.refresh_token}`,
+    );
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
 app.get("/refresh_token", async (req, res) => {
-  const url = "https://accounts.spotify.com/api/token";
-  const form = new URLSearchParams({
-    grant_type: "refresh_token",
-    refresh_token: refresh_token,
-  });
-  const headers = {
-    "content-type": "application/x-www-form-urlencoded",
-    Authorization:
-      "Basic " +
-      Buffer.from(client_id + ":" + client_secret).toString("base64"),
-  };
-  const result = await axios.post(url, form.toString(), { headers });
-  res.json(result.data);
+  try {
+    const refresh_token = req.query.refresh_token;
+    const url = "https://accounts.spotify.com/api/token";
+    const form = new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: refresh_token,
+    });
+    const headers = {
+      "content-type": "application/x-www-form-urlencoded",
+      Authorization:
+        "Basic " +
+        Buffer.from(client_id + ":" + client_secret).toString("base64"),
+    };
+    const result = await axios.post(url, form.toString(), { headers });
+    res.json(result.data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 const fetchRecentlyPlayed = async (access_token) => {
@@ -94,27 +101,39 @@ const fetchRecentlyPlayed = async (access_token) => {
 };
 
 app.get("/recently_played", async (req, res) => {
-  const tracks = await fetchRecentlyPlayed(req.query.access_token);
-  res.json(tracks);
+  try {
+    const tracks = await fetchRecentlyPlayed(req.query.access_token);
+    res.json(tracks);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.get("/cluster", async (req, res) => {
-  const tracks = await fetchRecentlyPlayed(req.query.access_token);
-  const filteredTracks = prepareSongs(tracks);
+  try {
+    const tracks = await fetchRecentlyPlayed(req.query.access_token);
+    const filteredTracks = prepareSongs(tracks);
 
-  const vectors = filteredTracks.map(({ vector }) => vector);
-  const config = { algorithm: "kmeans", n_clusters: 8 };
-  const clusterResults = await axios.post(cluster_api_url, {
-    vectors,
-    config,
-  });
-  const labels = clusterResults.data.labels;
+    const vectors = filteredTracks.map(({ vector }) => vector);
+    const config = {
+      algorithm: "hdbscan",
+      min_cluster_size: 2,
+      min_samples: 2,
+    };
+    const clusterResults = await axios.post(cluster_api_url, {
+      vectors,
+      config,
+    });
+    const labels = clusterResults.data.labels;
 
-  const clustered = filteredTracks.map(({ song }, i) => ({
-    ...song,
-    cluster: labels[i],
-  }));
-  res.json(clustered);
+    const clustered = filteredTracks.map(({ song }, i) => ({
+      ...song,
+      cluster: labels[i],
+    }));
+    res.json(clustered);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.listen(port, () => {

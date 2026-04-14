@@ -33,12 +33,12 @@ function TrackGrid({ tracks }) {
 }
 
 function App() {
-  const [tracks, setTracks] = useState([]);
+  const [groups, setGroups] = useState({});
   const [accessToken, setAccessToken] = useState(null);
 
   useEffect(() => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
+    const hash = window.location.hash.substring(1);
+    const urlParams = new URLSearchParams(hash);
     const access_token = urlParams.get("access_token");
     setAccessToken(access_token);
     if (access_token === null) {
@@ -47,25 +47,20 @@ function App() {
     }
     const fetchTracks = async () => {
       const response = await fetch(
-        `${VITE_API_URL}/recently_played?access_token=${access_token}`,
+        `${VITE_API_URL}/cluster?access_token=${access_token}`,
       );
       window.history.replaceState({}, document.title, window.location.pathname);
       const data = await response.json();
-      // sort tracks
-      data.sort((a, b) => {
-        const [ra, ga, ba] = a.average_color;
-        const [rb, gb, bb] = b.average_color;
-        const [ha, sa, la] = convert.rgb.hsl(ra, ga, ba);
-        const [hb, sb, lb] = convert.rgb.hsl(rb, gb, bb);
-        if (ha !== hb) {
-          return ha - hb;
-        } else if (sa !== sb) {
-          return sa - sb;
-        } else {
-          return la - lb;
-        }
-      });
-      setTracks(data);
+      console.log(data);
+
+      const grouped = data.reduce((acc, track) => {
+        const key = track.cluster;
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(track);
+        return acc;
+      }, {});
+
+      setGroups(grouped);
     };
     fetchTracks();
   }, []);
@@ -73,7 +68,14 @@ function App() {
   return (
     <div className="container">
       <header>Color Wrapped</header>
-      <TrackGrid tracks={tracks} />
+      {Object.entries(groups)
+        .sort(([a], [b]) => Number(a) - Number(b))
+        .map(([cluster, tracks]) => (
+          <div key={cluster}>
+            <h2>{cluster === "-1" ? "Outliers" : `Cluster ${cluster}`}</h2>
+            <TrackGrid tracks={tracks} />
+          </div>
+        ))}
     </div>
   );
 }

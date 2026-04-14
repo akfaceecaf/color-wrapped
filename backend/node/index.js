@@ -3,8 +3,7 @@ import express from "express";
 import axios from "axios";
 import dotenv from "dotenv";
 
-import fetchAverageColor from "./color.js";
-import { prepareSongs } from "./cluster.js";
+import { fetchAverageColor, prepareSongs } from "./color.js";
 
 dotenv.config();
 

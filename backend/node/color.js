@@ -23,7 +23,7 @@ const toEncodedHSL = (rgba) => {
   const c = max - min;
 
   if (c === 0) {
-    return [0, 0, 1];
+    return [0, 0, l];
   }
 
   const s = l <= 0.5 ? c / (max + min) : c / (2 - max - min);

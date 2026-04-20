@@ -3,8 +3,6 @@ import express from "express";
 import axios from "axios";
 import dotenv from "dotenv";
 
-import { fetchAverageColor, prepareSongs } from "./color.js";
-
 dotenv.config();
 
 const app = express();
@@ -84,7 +82,7 @@ const fetchRecentlyPlayed = async (access_token) => {
   const result = await axios.get(url, { headers });
   const items = result.data.items;
 
-  const extractSongDetails = async (item) => {
+  const extractSongDetails = (item) => {
     const image_url = item.track.album.images[0].url;
     const details = {
       track_id: item.track.uri,
@@ -92,12 +90,11 @@ const fetchRecentlyPlayed = async (access_token) => {
       artist: item.track.artists[0].name,
       album_name: item.track.album.name,
       image_url: image_url,
-      average_color: await fetchAverageColor(image_url),
     };
     return details;
   };
 
-  return Promise.all(items.map((item) => extractSongDetails(item)));
+  return items.map((item) => extractSongDetails(item));
 };
 
 app.get("/recently_played", async (req, res) => {
@@ -112,23 +109,17 @@ app.get("/recently_played", async (req, res) => {
 app.get("/cluster", async (req, res) => {
   try {
     const tracks = await fetchRecentlyPlayed(req.query.access_token);
-    const filteredTracks = prepareSongs(tracks);
-
-    const vectors = filteredTracks.map(({ vector }) => vector);
-    const config = {
-      algorithm: "hdbscan",
-      min_cluster_size: 2,
-      min_samples: 2,
+    const urls = tracks.map(({ image_url }) => image_url);
+    const headers = {
+      "content-type": "application/json",
     };
-    const clusterResults = await axios.post(cluster_api_url, {
-      vectors,
-      config,
-    });
-    const labels = clusterResults.data.labels;
 
-    const clustered = filteredTracks.map(({ song }, i) => ({
-      ...song,
-      cluster: labels[i],
+    const result = await axios.post(cluster_api_url, { urls }, { headers });
+    const colors = result.data;
+
+    const clustered = tracks.map((track, i) => ({
+      ...track,
+      ...colors[i],
     }));
     res.json(clustered);
   } catch (err) {

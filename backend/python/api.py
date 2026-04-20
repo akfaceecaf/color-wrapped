@@ -44,7 +44,7 @@ def cluster():
         labels = model.fit_predict(features).tolist()
         for idx, label in zip(color_indices, labels):
             clusters[idx] = label
-    return jsonify({"rgb": colors, "class": classes, "cluster": clusters})
+    return jsonify([{"rgb": rgb, "class": cl, "cluster": cluster} for rgb, cl, cluster in zip(colors, classes, clusters)])
 
 
 if __name__ == "__main__":

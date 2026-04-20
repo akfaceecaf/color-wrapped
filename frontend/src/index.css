@@ -44,3 +44,8 @@
 .navbar-link:hover {
   opacity: 0.6;
 }
+
+.track-grid {
+  overflow-y: auto;
+  height: 100%;
+}

@@ -45,7 +45,31 @@
   opacity: 0.6;
 }
 
-.track-grid {
-  overflow-y: auto;
+.cluster-list {
   height: 100%;
+  padding-top: 75px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem 0;
+}
+
+.cluster-header {
+  font-family: "Helvetica Neue";
+  font-size: clamp(2rem, 6vw, 6rem);
+  font-weight: 300;
+  letter-spacing: 0.1rem;
+  padding-left: 1rem;
+  color: rgb(0, 0, 0);
+}
+
+.track-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+  width: 100%;
+}
+
+.track-image {
+  width: 100%;
+  aspect-ratio: 1;
 }

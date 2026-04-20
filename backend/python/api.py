@@ -23,7 +23,7 @@ def cluster():
     urls = data.get("urls", [])
 
     if not urls:
-        return jsonify({"class": [], "cluster": []})
+        return jsonify({"rgb": [], "class": [], "cluster": []})
 
     colors = [
         get_color(url, s_threshold=0.1, l_threshold_range=(0.15, 0.85), p_threshold=0.2)
@@ -40,12 +40,11 @@ def cluster():
         features = np.array(
             [list(color_to_hsl_encoded(c).values()) for c in color_items]
         )
-        n_clusters = 5
-        model = KMeans(n_clusters=n_clusters, random_state=42)
+        model = KMeans(n_clusters=5, random_state=42)
         labels = model.fit_predict(features).tolist()
         for idx, label in zip(color_indices, labels):
             clusters[idx] = label
-    return jsonify({"class": classes, "cluster": clusters})
+    return jsonify({"rgb": colors, "class": classes, "cluster": clusters})
 
 
 if __name__ == "__main__":

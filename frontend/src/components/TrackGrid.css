@@ -1,0 +1,10 @@
+.track-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+  width: 100%;
+}
+
+.track-image {
+  width: 100%;
+  aspect-ratio: 1;
+}

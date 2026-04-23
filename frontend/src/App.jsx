@@ -1,45 +1,84 @@
 import "./App.css";
-import Navbar from "./Navbar";
+import Navbar from "./components/Navbar";
+import ClusterList from "./components/ClusterList";
 import mockData from "../data/mockData.json";
+import { groupTracks } from "./utils/tracks";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useTexture } from "@react-three/drei";
+import { Suspense, useRef } from "react";
 
-const VITE_API_URL = import.meta.env.VITE_API_URL;
+function CameraRig() {
+  const xRef = useRef(0);
+  const yRef = useRef(0);
+  const { camera, mouse } = useThree();
 
-function groupTracks(tracks) {
-  const groupedTracks = Object.groupBy(tracks, ({ cluster }) => cluster);
-  return groupedTracks;
+  useFrame(() => {
+    const targetX = mouse.x * 0.3;
+    const targetY = mouse.y * 0.3;
+    xRef.current += (targetX - xRef.current) * 0.02;
+    yRef.current += (targetY - yRef.current) * 0.06;
+    camera.position.x = xRef.current;
+    camera.position.y = yRef.current;
+  });
+  return null;
 }
 
-function ClusterList({ groups }) {
-  const clusters = Object.entries(groups);
+const sr = (n) => (((Math.sin(n * 127.1 + 311.7) * 43758.5453) % 1) + 1) % 1;
+
+const xRange = [-2, 2];
+const yRange = [-2, 2];
+const zRange = [0, 2.5];
+
+function TrackPlane({ imageUrl, i }) {
+  const meshRef = useRef();
+  const texture = useTexture(imageUrl);
+
+  const x = sr(i * 3) * (xRange[1] - xRange[0]) + xRange[0];
+  const y = sr(i * 3 + 1) * (yRange[1] - yRange[0]) + yRange[0];
+  const z = sr(i * 3 + 2) * (zRange[1] - zRange[0]) + zRange[0];
+
+  const fs = 0.5 + sr(i * 5) * 0.5;
+  const fx = 0.5 + sr(i * 9) * Math.PI * 2;
+
+  useFrame(({ clock }) => {
+    // meshRef.current.position.y =
+    //   y + Math.sin(clock.elapsedTime * fs + fx) * 0.05;
+    // meshRef.current.position.x =
+    //   x + Math.sin(clock.elapsedTime * fs + fx + 1.5) * 0.05;
+  });
+
   return (
-    <div className="cluster-list">
-      {clusters.map(([cluster_id, tracks]) => (
-        <div key={cluster_id}>
-          <header className="cluster-header">Cluster {cluster_id}</header>
-          <TrackGrid tracks={tracks} />
-        </div>
-      ))}
-    </div>
+    <mesh ref={meshRef} position={[x, y, z]}>
+      <planeGeometry />
+      <meshBasicMaterial map={texture} />
+    </mesh>
   );
 }
 
-function TrackGrid({ tracks }) {
-  const urls = tracks.map((track, i) => (
-    <img src={track.image_url} key={i} className="track-image" />
-  ));
-  return <div className="track-grid">{urls}</div>;
-}
-
-function App() {
+export default function App() {
   const tracks = mockData;
   const groupedTracks = groupTracks(tracks);
+  const cluster = groupedTracks[0];
 
   return (
     <div className="app">
       <Navbar />
-      <ClusterList groups={groupedTracks} />
+      <div className="canvas-wrapper">
+        <Canvas
+          className="track-gallery-canvas"
+          camera={{ position: [0, 0, 5], fov: 25, near: 1, far: 100 }}
+        >
+          <Suspense fallback={null}>
+            {/* <TrackPlane imageUrl={tracks[0].image_url} i={0} /> */}
+            {cluster.map(({ image_url }, i) => (
+              <TrackPlane imageUrl={image_url} i={i} key={i} />
+            ))}
+          </Suspense>
+          <CameraRig />
+        </Canvas>
+      </div>
+
+      {/* <ClusterList groups={groupedTracks} /> */}
     </div>
   );
 }
-
-export default App;

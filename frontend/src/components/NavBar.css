@@ -1,0 +1,47 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 1000;
+  mix-blend-mode: difference;
+}
+
+.navbar-logo {
+  font-family: "Arial Black";
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: 0.2rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+}
+
+.navbar-actions {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 1.5rem;
+}
+
+.navbar-actions--right {
+  right: 2rem;
+}
+
+.navbar-link {
+  font-family: "Helvetica Neue";
+  font-weight: 400;
+  color: white;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.navbar-link:hover {
+  opacity: 0.6;
+}

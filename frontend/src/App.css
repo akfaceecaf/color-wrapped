@@ -13,4 +13,96 @@
 .canvas-wrapper {
   position: fixed;
   inset: 0;
+  pointer-events: none;
+}
+
+.cluster-nav {
+  position: fixed;
+  bottom: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  z-index: 800;
+  pointer-events: all;
+}
+
+.cluster-nav-button {
+  padding: 6px 10px;
+  font-family: "Helvetica Neue";
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.45);
+  transition: color 0.4s ease;
+}
+
+.cluster-nav-button:hover {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.cluster-nav-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.cluster-nav-count {
+  font-family: monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.cluster-nav-toggle {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.hover-tooltip {
+  position: fixed;
+  bottom: 7em;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 950;
+  white-space: nowrap;
+  font-family: monospace;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+
+.hover-tooltip--visible {
+  opacity: 1;
+}
+
+.hover-tooltip-track {
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.hover-tooltip-artist {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.skip-button {
+  width: 20px;
+  aspect-ratio: 1;
+  opacity: 0.5;
+  transition: opacity 0.22s ease;
+}
+
+.skip-button:hover {
+  opacity: 0.85;
+}
+
+.skip-button--left {
+  transform: rotate(180deg);
 }

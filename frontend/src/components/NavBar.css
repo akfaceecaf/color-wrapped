@@ -9,6 +9,7 @@
   gap: 1rem;
   z-index: 1000;
   mix-blend-mode: difference;
+  pointer-events: none;
 }
 
 .navbar-logo {
@@ -28,6 +29,7 @@
   transform: translateY(-50%);
   display: flex;
   gap: 1.5rem;
+  pointer-events: all;
 }
 
 .navbar-actions--right {

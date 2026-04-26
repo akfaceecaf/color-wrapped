@@ -1,0 +1,27 @@
+.hover-tooltip {
+  position: fixed;
+  bottom: 7em;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 950;
+  white-space: nowrap;
+  font-family: monospace;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+
+.hover-tooltip--visible {
+  opacity: 1;
+}
+
+.hover-tooltip-track {
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.hover-tooltip-artist {
+  color: rgba(0, 0, 0, 0.6);
+}

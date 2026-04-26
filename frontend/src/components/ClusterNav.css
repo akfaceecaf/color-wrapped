@@ -1,0 +1,66 @@
+.cluster-nav {
+  position: fixed;
+  bottom: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  z-index: 800;
+  pointer-events: all;
+}
+
+.cluster-nav-button {
+  padding: 6px 10px;
+  font-family: "Helvetica Neue";
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.45);
+  transition: color 0.4s ease;
+}
+
+.cluster-nav-button:hover {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.cluster-nav-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.cluster-nav-count {
+  font-family: monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.cluster-nav-toggle {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.cluster-nav-toggle-icon {
+  color: rgb(0, 0, 0, 0.6);
+}
+
+.skip-button {
+  width: 20px;
+  aspect-ratio: 1;
+  opacity: 0.5;
+  transition: opacity 0.22s ease;
+}
+
+.skip-button:hover {
+  opacity: 0.85;
+}
+
+.skip-button--left {
+  transform: rotate(180deg);
+}

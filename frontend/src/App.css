@@ -64,6 +64,10 @@
   cursor: pointer;
 }
 
+.cluster-nav-toggle-icon {
+  color: rgb(0, 0, 0, 0.6);
+}
+
 .hover-tooltip {
   position: fixed;
   bottom: 7em;

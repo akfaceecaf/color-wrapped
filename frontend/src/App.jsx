@@ -6,7 +6,6 @@ import { groupTracks } from "./utils/tracks";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import { Suspense, useRef, useState } from "react";
-import { MeshBasicMaterial } from "three";
 
 const sr = (n) => (((Math.sin(n * 127.1 + 311.7) * 43758.5453) % 1) + 1) % 1; // hashing function to get between 0,1
 const xSpread = 325;
@@ -33,9 +32,8 @@ function CameraRig() {
 
 function TrackPlane({ i, track, total, onHover, showColor }) {
   const { viewport } = useThree();
-  const imageUrl = track.image_url;
   const meshRef = useRef();
-  const texture = useTexture(imageUrl);
+  const texture = useTexture(track.image_url);
 
   const scale = viewport.height / 900;
   const cols = total > 6 ? 4 : 3;
@@ -83,6 +81,7 @@ function TrackPlane({ i, track, total, onHover, showColor }) {
         key={showColor ? "color" : "texture"}
         color={showColor ? [r / 255, g / 255, b / 255] : [1, 1, 1]}
         map={showColor ? null : texture}
+        toneMapped={false}
       />
     </mesh>
   );
@@ -92,8 +91,7 @@ export default function App() {
   const [cluster, setCluster] = useState(0);
   const [hovered, setHovered] = useState(null);
   const [showColor, setShowColor] = useState(false);
-  const tracks = mockData;
-  const groupedTracks = groupTracks(tracks);
+  const groupedTracks = groupTracks(mockData);
   const nClusters = groupedTracks.length;
 
   return (
@@ -125,7 +123,7 @@ export default function App() {
           className="cluster-nav-button"
         >
           <img
-            src="/skip.png"
+            src="/skip.svg"
             alt="Prev"
             className="skip-button skip-button--left"
           />
@@ -141,6 +139,7 @@ export default function App() {
                 width: 36,
                 height: 36,
               }}
+              className="cluster-nav-toggle-icon"
             >
               <svg
                 style={{
@@ -202,7 +201,7 @@ export default function App() {
           className="cluster-nav-button"
         >
           <img
-            src="/skip.png"
+            src="/skip.svg"
             alt="Next"
             className="skip-button skip-button--right"
           />

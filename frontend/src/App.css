@@ -15,3 +15,47 @@
   inset: 0;
   pointer-events: none;
 }
+
+.login-button {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 10px;
+  text-decoration: none;
+  color: white;
+  background-color: #1db954;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+
+.login-button:hover {
+  background-color: #18a349;
+}
+
+.login-button-text {
+  font-family: "helvetica neue";
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.loading-menu {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "helvetica neue";
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.45);
+}

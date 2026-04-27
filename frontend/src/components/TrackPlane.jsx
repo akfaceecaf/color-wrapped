@@ -9,7 +9,7 @@ const zSpread = 300;
 
 export default function TrackPlane({ i, track, total, onHover, showColor }) {
   const { viewport } = useThree();
-  const meshRef = useRef();
+  const groupRef = useRef();
   const texture = useTexture(track.image_url);
 
   const scale = viewport.height / 900;
@@ -33,16 +33,16 @@ export default function TrackPlane({ i, track, total, onHover, showColor }) {
   const [r, g, b] = track.rgb;
 
   useFrame(({ clock }) => {
-    meshRef.current.rotation.x = y / 900;
-    meshRef.current.rotation.y = -x / 1100;
-    meshRef.current.position.x = x + Math.sin(clock.elapsedTime * fs + fx) * 4;
-    meshRef.current.position.y =
+    groupRef.current.rotation.x = y / 900;
+    groupRef.current.rotation.y = -x / 1100;
+    groupRef.current.position.x = x + Math.sin(clock.elapsedTime * fs + fx) * 4;
+    groupRef.current.position.y =
       y + Math.sin(clock.elapsedTime * fs + fx + 1.5) * 4;
   });
 
   return (
-    <mesh
-      ref={meshRef}
+    <group
+      ref={groupRef}
       position={[x, y, z]}
       onPointerOver={(e) => {
         e.stopPropagation();
@@ -53,13 +53,21 @@ export default function TrackPlane({ i, track, total, onHover, showColor }) {
         onHover(null);
       }}
     >
-      <planeGeometry args={[size, size]} />
-      <meshBasicMaterial
-        key={showColor ? "color" : "texture"}
-        color={showColor ? [r / 255, g / 255, b / 255] : [1, 1, 1]}
-        map={showColor ? null : texture}
-        toneMapped={false}
-      />
-    </mesh>
+      <mesh>
+        <planeGeometry args={[size, size]} />
+        <meshBasicMaterial
+          map={texture}
+          toneMapped={false}
+          visible={!showColor}
+        />
+      </mesh>
+      <mesh>
+        <planeGeometry args={[size, size]} />
+        <meshBasicMaterial
+          color={[r / 255, g / 255, b / 255]}
+          visible={showColor}
+        />
+      </mesh>
+    </group>
   );
 }

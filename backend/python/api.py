@@ -35,13 +35,17 @@ def cluster():
     color_items = [colors[i] for i in color_indices]
 
     clusters = [None] * len(urls)
+    
+    for i, cls in enumerate(classes):
+        if cls != "color":
+            clusters[i] = cls
 
     if len(color_items) >= 5:
         features = np.array(
             [list(color_to_hsl_encoded(c).values()) for c in color_items]
         )
         model = KMeans(n_clusters=5, random_state=42)
-        labels = model.fit_predict(features).tolist()
+        labels = model.fit_predict(features).astype(str).tolist()
         for idx, label in zip(color_indices, labels):
             clusters[idx] = label
     return jsonify([{"rgb": rgb, "class": cl, "cluster": cluster} for rgb, cl, cluster in zip(colors, classes, clusters)])

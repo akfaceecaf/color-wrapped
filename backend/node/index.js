@@ -75,7 +75,7 @@ app.get("/refresh_token", async (req, res) => {
 });
 
 const fetchRecentlyPlayed = async (access_token) => {
-  const url = "https://api.spotify.com/v1/me/player/recently-played?limit=50";
+  const url = "https://api.spotify.com/v1/me/player/recently-played?limit=25";
   const headers = {
     Authorization: "Bearer " + access_token,
   };
